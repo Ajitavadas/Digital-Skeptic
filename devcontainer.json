@@ -1,0 +1,85 @@
+{
+    "name": "Digital Skeptic AI Dev Environment",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+
+    // Features to add to the dev container
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true,
+            "username": "vscode",
+            "uid": "1000",
+            "gid": "1000"
+        },
+        "ghcr.io/devcontainers/features/python:1": {
+            "version": "3.11",
+            "installTools": true,
+            "optimize": true
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest"
+        }
+    },
+
+    // Configure tool-specific properties
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.formatting.blackProvider": "black",
+                "python.formatting.provider": "black",
+                "python.linting.flake8Enabled": true,
+                "python.testing.pytestEnabled": true,
+                "files.associations": {
+                    "*.md": "markdown"
+                },
+                "terminal.integrated.defaultProfile.linux": "zsh"
+            },
+
+            // Extensions to install
+            "extensions": [
+                "ms-python.python",
+                "ms-python.black-formatter",
+                "ms-python.flake8",
+                "ms-python.pylint",
+                "ms-toolsai.jupyter",
+                "davidanson.vscode-markdownlint",
+                "yzhang.markdown-all-in-one",
+                "ms-vscode.vscode-json",
+                "streetsidesoftware.code-spell-checker",
+                "ms-vscode.remote-containers",
+                "github.copilot",
+                "ms-vscode.remote-ssh"
+            ]
+        }
+    },
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally
+    "forwardPorts": [8000, 8080],
+
+    // Use 'postCreateCommand' to run commands after the container is created
+    "postCreateCommand": "pip install -r requirements.txt && python -m pytest --version",
+
+    // Configure container environment
+    "containerEnv": {
+        "PYTHONPATH": "${containerWorkspaceFolder}",
+        "PYTHONUNBUFFERED": "1"
+    },
+
+    // Mount the local environment file (will be created)
+    "mounts": [
+        "source=${localWorkspaceFolder}/.env.local,target=${containerWorkspaceFolder}/.env,type=bind,consistency=cached"
+    ],
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root
+    "remoteUser": "vscode",
+
+    // Keep container running after VS Code closes
+    "shutdownAction": "stopContainer"
+}
